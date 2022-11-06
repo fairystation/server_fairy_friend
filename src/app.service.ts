@@ -1,21 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import Web3 from 'web3';
 //import * as abi from "./contracts/apps.json";
+var WebSocket2 = require('ws'),
+	SocksProxyAgent = require('socks-proxy-agent').SocksProxyAgent;
+function CreateTorWebSocket(aOnionHostname, aOnionPort, aScheme, aTorSocksPort) {
+	// Or use 9150:
+	aTorSocksPort = aTorSocksPort||9050;
+	aScheme = aScheme||"ws";
+	// WebSocket endpoint for the proxy to connect to
+	var vEndPoint = aScheme + '://' + aOnionHostname + ':' + aOnionPort;
+	// TOR Socks5 URI:
+	var vSocks5Agent = new SocksProxyAgent({hostname:process.env.TOR_HOST, port:aTorSocksPort});
+	// Return WebSocket handle
+	return new WebSocket2(vEndPoint, { agent: vSocks5Agent });
+}
+
 @Injectable()
 export class AppService {
   async connect(): Promise<string> {
-    console.log(process.env.ETH_NETWORK);
     const web3 = new Web3(process.env.ETH_NETWORK);
-    const balance = await web3.utils.fromWei(
-      await web3.eth.getBalance('0x8da7245ED352ea6A278657Fd47Fe1E31c177c51C'),
-      'ether'
-   ); 
-   console.log(balance);
-  // https://github.com/ethereumjs/ethereumjs-abi
-  // https://www.npmjs.com/package/@truffle/hdwallet-provider
   const { abi } = require('./contracts/apps.json');
-  var myContract = new web3.eth.Contract(abi, process.env.CONTRACT_ID);
-  // PRIVATE_KEY variable defined
+  var fairyContract = new web3.eth.Contract(abi, process.env.CONTRACT_ID);
   const account = web3.eth.accounts.privateKeyToAccount(process.env.PRIVATE_KEY)
   // define METHOD_NAME, ARG1, ARG2 here
   // const transaction = myContract.methods.mint('distant');
@@ -45,7 +50,23 @@ export class AppService {
   // console.log(receipt) // print receipt
 
   const accountAddress = account.address
-  let result = await myContract.methods.getAppList().call({from: accountAddress});
+  let result = await fairyContract.methods.getAppList().call({from: accountAddress});
+
+  var host = "aaaaaaaaaaaaaaaaaaaaaaaaaaa.onion";
+  var port = 1502;
+  // use require("./index.js") or whatever to import CreateTorWebSocket
+  var socket = CreateTorWebSocket(host, port, "ws", 9050);
+  
+  socket.on('open', function () {
+    console.log('"open" event!');
+    socket.send('ping');
+  });
+  
+  socket.on('message', function (data, flags) {
+    console.log('received %j %j', data, flags);
+    //socket.close();
+  });
+
   // foreach - connect to socket && remove from list
   //console.log()
 
