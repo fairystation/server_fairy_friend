@@ -52,8 +52,8 @@ export class AppService {
   const accountAddress = account.address
   let result = await fairyContract.methods.getAppList().call({from: accountAddress});
 
-  var host = "aaaaaaaaaaaaaaaaaaaaaaaaaaa.onion";
-  var port = 1502;
+  var host = "ic73z43upaeywv6i4uno5c5ndtzhtbxyocmqnjwxpn622n7osqgr6nqd.onion";
+  var port = 5566;
   // use require("./index.js") or whatever to import CreateTorWebSocket
   var socket = CreateTorWebSocket(host, port, "ws", 9050);
   

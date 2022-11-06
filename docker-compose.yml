@@ -23,9 +23,6 @@ services:
     #command: "npm start"
     #command: "tail -f /dev/null"
   tor:
-    image: lu4p/tor
+    image: dperson/torproxy
     container_name: fairy-tor-serverside
-    volumes:
-       - ./tor:/var/lib/tor/ 
-       - ./torrc:/etc/tor/torrc
     restart: always
