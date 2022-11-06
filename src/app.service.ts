@@ -46,12 +46,13 @@ export class AppService {
 
   const accountAddress = account.address
   let result = await myContract.methods.getAppList().call({from: accountAddress});
-  console.log(result)
+  // foreach - connect to socket && remove from list
+  //console.log()
 
   //console.log(await myContract.methods.mint('distant').call({from: '0x1a7d5bF03d2a72494B9487fF0E0B9491c13965B4'}));
   //const asd = await myContract.methods.getAppList().call({from: '0x1a7d5bF03d2a72494B9487fF0E0B9491c13965B4'});
   //console.log(asd);
-    return balance;
+    return result;
   }
 }
 

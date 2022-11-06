@@ -15,7 +15,7 @@ services:
       - .:/usr/src/app
       - /usr/app/node_modules
     ports:
-      - "3000:3000"
+      - "3310:3000"
     tty: true
     command: npm run start:dev
     extra_hosts:
